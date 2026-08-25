@@ -7,5 +7,6 @@ requires-python = ">=3.13"
 dependencies = [
     "pymeshfix>=0.18.1",
     "pymeshlab>=2025.7.post1",
+    "pyvista>=0.48.4",
     "trimesh>=5.0.0",
 ]
