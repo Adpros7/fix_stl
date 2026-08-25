@@ -2,7 +2,9 @@ to run:
 
 make a sh file called run.sh
 
+you need full paths for run.sh
+
 ```bash
-#!/bin/zsh
-PATH_TO_VENV/bin/python3 fix_stl.py "$@"
+#!/bin/bash
+PATH/TO/INTERPRETER PATH/TO/fix_stl.py "$@"
 ```
