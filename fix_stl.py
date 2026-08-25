@@ -24,5 +24,5 @@ v, f = meshfix.mesh.points, meshfix.mesh.faces.reshape(-1, 4)[:, 1:]  # pyright:
 
 meshfix.clean()
 meshfix.save(
-    f"{"/".join(path.split("/")[:-2])}/{path.removesuffix('.stl')}_{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl"
+    f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl"
 )
