@@ -5,9 +5,7 @@ import argparse
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import pymeshfix
-import pymeshlab
 import trimesh
-from trimesh.exchange.load import mesh_formats
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path")
