@@ -3,6 +3,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import pymeshfix
 import trimesh
+import manifold3d
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path")
@@ -22,6 +23,14 @@ v, f = meshfix.mesh.points, meshfix.mesh.faces.reshape(-1, 4)[:, 1:]  # pyright:
 fixer = trimesh.Trimesh(v, f)
 fixer.fill_holes()
 fixer.fix_normals()
+
+v, f = fixer.vertices, fixer.faces
+
+m3d = manifold3d.Mesh(v, f)
+m3d.merge()
+
+v, f = m3d.vert_properties, m3d.tri_verts
+
 
 
 fixer.export(f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl")
