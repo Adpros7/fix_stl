@@ -31,6 +31,4 @@ m3d.merge()
 
 v, f = m3d.vert_properties, m3d.tri_verts
 
-
-
-fixer.export(f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl")
+trimesh.Trimesh(v, f).export(f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl")
