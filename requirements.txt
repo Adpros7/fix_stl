@@ -2,3 +2,4 @@ pymeshlab
 pymeshfix
 trimesh
 manifold3d
+scipy

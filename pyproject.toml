@@ -9,5 +9,6 @@ dependencies = [
     "pymeshfix>=0.18.1",
     "pymeshlab>=2025.7.post1",
     "pyvista>=0.48.4",
+    "scipy>=1.18.1",
     "trimesh>=5.0.0",
 ]
