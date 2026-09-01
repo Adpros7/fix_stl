@@ -1,7 +1,7 @@
 import argparse
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
+import os
 import pymeshfix
 import trimesh
 
@@ -52,6 +52,8 @@ timestamp = datetime.now(
     ZoneInfo("America/New_York")
 ).strftime("%Y-%m-%d_%H-%M-%S")
 
+os.remove(path)
+
 mesh.export(
-    f"{path.removesuffix('.stl')}_fixed__{timestamp}.stl"
+    f"{path.removesuffix('.stl')}"
 )
