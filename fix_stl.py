@@ -24,7 +24,4 @@ fixer.fill_holes()
 fixer.fix_normals()
 
 
-
-meshfix.save(
-    f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl"
-)
+fixer.export(f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl")
