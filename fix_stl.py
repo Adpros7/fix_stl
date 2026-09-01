@@ -1,54 +1,57 @@
-from pathlib import Path
-import sys
-
-import traceback
-
-
-def excepthook(exc_type, exc_value, exc_tb):
-
-    with open(Path().home() / "Downloads/fix_stl_error.txt", "w") as f:
-        traceback.print_exception(exc_type, exc_value, exc_tb, file=f)
-
-
-sys.excepthook = excepthook
-
 import argparse
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
 import pymeshfix
 import trimesh
-import manifold3d
-import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument("path")
-
-path = str(parser.parse_args().path)
+path = parser.parse_args().path
 
 mesh = trimesh.load_mesh(path)
 
-v, f = mesh.vertices, mesh.faces  # pyright: ignore[reportAttributeAccessIssue]
+meshfix = pymeshfix.MeshFix(mesh.vertices, mesh.faces)
+meshfix.repair(
+    joincomp=True,
+    remove_smallest_components=False,
+)
+meshfix.clean(max_iters=10, inner_loops=3)
 
-meshfix = pymeshfix.MeshFix(v, f)
-meshfix.repair(remove_smallest_components=False)
-meshfix.clean()
-
-v, f = meshfix.mesh.points, meshfix.mesh.faces.reshape(-1, 4)[:, 1:]  # pyright: ignore[reportAttributeAccessIssue]
-
-fixer = trimesh.Trimesh(v, f)
-fixer.fill_holes()
-fixer.fix_normals()
-
-v, f = (
-    np.ascontiguousarray(fixer.vertices, dtype=np.float32),
-    np.ascontiguousarray(fixer.faces, dtype=np.uint32),
+mesh = trimesh.Trimesh(
+    meshfix.points,
+    meshfix.faces,
+    process=True,
 )
 
-m3d = manifold3d.Mesh(v, f)
-m3d.merge()
+mesh.remove_infinite_values()
+mesh.update_faces(mesh.unique_faces())
+mesh.update_faces(mesh.nondegenerate_faces())
+mesh.remove_unreferenced_vertices()
+mesh.merge_vertices()
 
-v, f = m3d.vert_properties, m3d.tri_verts
+trimesh.repair.fill_holes(mesh)
+trimesh.repair.fix_winding(mesh)
+trimesh.repair.fix_normals(mesh, multibody=True)
+trimesh.repair.fix_inversion(mesh, multibody=True)
 
-trimesh.Trimesh(v, f).export(
-    f"{path.removesuffix('.stl')}_fixed__{str(datetime.now(ZoneInfo('America/New_York'))).replace(' ', '')}.stl"
+meshfix = pymeshfix.MeshFix(mesh.vertices, mesh.faces)
+meshfix.repair(
+    joincomp=True,
+    remove_smallest_components=False,
+)
+
+mesh = trimesh.Trimesh(
+    meshfix.points,
+    meshfix.faces,
+    process=True,
+)
+
+
+timestamp = datetime.now(
+    ZoneInfo("America/New_York")
+).strftime("%Y-%m-%d_%H-%M-%S")
+
+mesh.export(
+    f"{path.removesuffix('.stl')}_fixed__{timestamp}.stl"
 )
